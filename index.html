@@ -11,16 +11,16 @@
 }
 
 .video-box {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 712px;
-	height:410px;
+  position: relative;
+  width: 100%;
+	height: 0;
+	padding-bottom:56.25%;
   margin: auto;
 }
 .video-box__frame-container {
   position: absolute;
+	width: 100%;
+	height: 100%;
   overflow: hidden;
 }
 .video-box__frame-container--top, .video-box__frame-container--bottom {
@@ -721,6 +721,7 @@
 			</div>
   </div>
 
+	<script src="./jquery-3.4.1.min.js"></script>
   <script>
   if (detectIE()) {
     var frames = document.querySelectorAll('.js_video-box-frame');
@@ -728,6 +729,20 @@
       frames[i].style.display = 'none';
     }
   }
+
+	function resizeEvent () {
+
+		var $clipPath = $('#myClip');
+		var clipWrapWidth = $('.video-box').outerWidth();
+		var svgOiginWidth = 712;
+		var scaleValue = clipWrapWidth / svgOiginWidth;
+
+		$clipPath.css('transform', 'scale(' + scaleValue + ')');
+	}
+
+	$(window).on('resize', function () {
+		resizeEvent();
+	})
 
   function detectIE() {
     var ua = window.navigator.userAgent;
