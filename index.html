@@ -735,22 +735,23 @@
 		openChildWindow();
 	});
 
-	var win = null;
-	var state = false;
+	var childWindow = null;
 
 	function openChildWindow() {
-		win = window.open('https://oinochoe.github.io/window_opener/', '_blank', "top=10, left=10, width=400, height=400");
+		childWindow = window.open('https://oinochoe.github.io/window_opener/', '_blank', "top=10, left=10, width=400, height=400");
 		// win.document.write('<iframe width="100%", height="100%" src="https://oinochoe.github.io/window_opener/" frameborder="0" allowfullscreen></iframe>')
 	}
 
-	function checkChild() {
-		state = !!win;
+	function checkWindow() {
+		if (childWindow && childWindow.closed) {
+			window.clearInterval(intervalID);
+			alert('closed');
+		}
 	}
 
-	setInterval(() => {
-		checkChild()
-		console.log(state)
-	}, 100);
+	var intervalID = window.setInterval(checkWindow, 500);
+
+	console.log(intervalID)
 
 	function resizeEvent () {
 
