@@ -12,9 +12,9 @@
 
 .video-box {
   position: relative;
-  width: 100%;
+  width: 70%;
 	height: 0;
-	padding-bottom:56.25%;
+	padding-bottom:39.38%;
   margin: auto;
 }
 .video-box__frame-container {
@@ -72,17 +72,33 @@
   left: 0;
   width: 100%;
   height: 100%;
+	z-index:2;
   overflow: hidden;
 
   clip-path: url(#myClip);
   /* -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); */
 }
+.video-box__video-container:nth-of-type(1) {
+	top: 8%;
+	left: 5%;
+	opacity: 0.4;
+	z-index:1;
+}
 .video-box__video {
   position: relative;
   z-index: 2;
   width: 100%;
   height: 100%;
+}
+
+.js-button {
+	position: absolute;
+	left:0; top:0;
+	width: 100%;
+	 height: 100%;
+	 z-index:9;
+	 cursor: pointer;
 }
   </style>
 </head>
@@ -716,9 +732,14 @@
 
     </svg>
 
-    <div class="video-box__video-container">
-      <iframe class="video-box__video" type="text/html"
-        src="https://www.youtube.com/embed/oRU9UVEc8LQ?controls=0&showinfo=0" frameborder="0"></iframe>
+    <div class="video-box__video-container js-player">
+
+      <div id="js-video" class="video-box__video"></div>
+			</div>
+			<div class="video-box__video-container">
+				<div class="js-button"></div>
+				<div id="js-video2" class="video-box__video"></div>
+				</div>
 			</div>
   </div>
 
@@ -766,6 +787,72 @@
 	$(window).on('resize', function () {
 		resizeEvent();
 	})
+
+	$(function () {
+		resizeEvent();
+	})
+
+	var tag = document.createElement('script');
+		tag.src = "https://www.youtube.com/player_api";
+		var firstScriptTag = document.getElementsByTagName('script')[0];
+		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+		var player;
+		var player2;
+		function onYouTubePlayerAPIReady() {
+			player = new YT.Player('js-video', {
+				height: '100%',
+				width: '100%',
+				videoId: 'oRU9UVEc8LQ',
+				playerVars: {
+					'rel': 0, //Don't show related videos
+					'showinfo': 0, //Hide video info
+					'autoplay': 1, // Autoplay when player is ready
+					'loop': 1,  //Loop the video
+					'controls': 0, //Hide COntrols
+					'playlist': 'oRU9UVEc8LQ' //Needed for looping
+				},
+				// events: {
+				// 	'onReady': onPlayerReady
+				// }
+
+			});
+
+
+			player2 = new YT.Player('js-video2', {
+				height: '100%',
+				width: '100%',
+				videoId: 'oRU9UVEc8LQ',
+				playerVars: {
+					'rel': 0, //Don't show related videos
+					'showinfo': 0, //Hide video info
+					'autoplay': 1, // Autoplay when player is ready
+					'loop': 1,  //Loop the video
+					'controls': 0, //Hide COntrols
+					'playlist': 'oRU9UVEc8LQ' //Needed for looping
+				},
+				// events: {
+				// 	'onReady': onPlayerReady2
+				// }
+
+			});
+		}
+		function onPlayerReady(event) {
+			event.target.playVideo();
+		}
+
+
+			function onPlayerReady2(event) {
+				event.target.playVideo();
+			}
+
+
+
+			$(document).on('click', '.js-button', function() {
+				player.playVideo();
+				player2.playVideo();
+			});
+
 
   function detectIE() {
     var ua = window.navigator.userAgent;
