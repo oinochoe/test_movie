@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test</title>
+</head>
+<body>
+<div id="player3"></div>
+<script src="https://www.youtube.com/iframe_api"></script>
+	<script>
+		var player3;
+		function onYouTubeIframeAPIReady() {
+			player3 = new YT.Player('player3', {
+				width: '1920',
+				height: '1080',
+				videoId: 'y3lTDzyf0hs',
+				playerVars: {
+					autohide: 1,
+					modestbranding: 1,
+					showinfo: 0,
+					rel: 0,
+					controls: 0,
+					playsinline: 1,
+					autoplay: 1,
+					fs: 0,
+				},
+				events: {
+					'onReady': onPlayerReady,
+					'onStateChange': onPlayerStateChange
+				}
+			});
+		}
+
+		function onPlayerReady(event) {
+			event.target.playVideo();
+		}
+
+		var done = false;
+		function onPlayerStateChange(event) {
+			if (event.data == YT.PlayerState.PLAYING && !done) {
+				setTimeout(stopVideo, 6000);
+				done = true;
+			}
+		}
+		function stopVideo() {
+			player3.stopVideo();
+		}
+	</script>
+
+</body>
+</html>
