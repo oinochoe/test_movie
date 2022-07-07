@@ -61,6 +61,10 @@
       <div class="text">favorites</div>
       <div id="favorites">0</div>
     </div>
+    <div class="count_wrap">
+      <div class="text">current</div>
+      <div id="current">0</div>
+    </div>
   </main>
   <section>
     <h1 id="title">타이틀은?</h1>
@@ -90,15 +94,18 @@
       options: {
         yt_api: "https://www.googleapis.com/youtube/v3/videos",
         yt_key: "AIzaSyCxxgqQjDfBAL65x-JpNBUetbBeyxOh6vk",
+        yt_concurrent_views_api: "https://www.googleapis.com/youtube/v3/videos?key={{REPLACE_YOUTUBE_KEY}}&id={{REPLACE_VIDEO_ID}}&part=contentDetails,id,liveStreamingDetails,player,recordingDetails,snippet,statistics,status,topicDetails",
         $likes: "#likes",
         $views: "#views",
         $comments: "#comments",
         $favorite: "#favorite",
+        $current: "#current",
         $title: "#title"
       },
       update: function (video_id) {
         YTFunction.ajax.getInformation(video_id);
         YTFunction.ajax.get_title(video_id);
+        YTFunction.ajax.get_current(video_id, YTFunction.options.yt_key);
       },
       ajax: {
         getInformation: function (video_id) {
@@ -137,7 +144,7 @@
             fields: "items(snippet(title))",
             id: video_id
           };
-          var title = $.ajax({
+          $.ajax({
             type: "GET",
             data: data,
             url: YTFunction.options.yt_api,
@@ -145,6 +152,17 @@
             success: function (response) {
               var title = response.items[0].snippet["title"];
               $(YTFunction.options.$title).text(title);
+            }
+          });
+        },
+        get_current: function (video_id, api_key) {
+          $.ajax({
+            type: "GET",
+            url: YTFunction.options.yt_concurrent_views_api.replace("{{REPLACE_VIDEO_ID}}", video_id).replace("{{REPLACE_YOUTUBE_KEY}}", api_key),
+            async: false,
+            success: function (response) {
+              console.log(response);
+              // $(YTFunction.options.$current).text(info.likes);
             }
           });
         }
