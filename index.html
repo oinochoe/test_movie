@@ -1399,10 +1399,10 @@
 			</div>
   </div>
 
-	<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/y3lTDzyf0hs" title="YouTube video player"
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/y3lTDzyf0hs" title="YouTube video player"
 		frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-		allowfullscreen></iframe> -->
-<div id="player3"></div>
+		allowfullscreen></iframe>
+
 	<h1>
 		링크테스트
 	</h1>
@@ -1413,51 +1413,6 @@
 
 <a href="https://www.facebook.com/NCSOFT.Korea/">링크2</a>
 	<script src="./jquery-3.4.1.min.js"></script>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-
-
-	<script>
-
-		var player3;
-		function onYouTubeIframeAPIReady() {
-			player3 = new YT.Player('player3', {
-				width: '1920',
-				height: '1080',
-				videoId: 'y3lTDzyf0hs',
-				playerVars: {
-					autohide: 1,
-					modestbranding: 1,
-					showinfo: 0,
-					rel: 0,
-					controls: 0,
-					playsinline: 1,
-					autoplay: 1,
-					fs: 0,
-				},
-				events: {
-					'onReady': onPlayerReady,
-					'onStateChange': onPlayerStateChange
-				}
-			});
-		}
-
-		function onPlayerReady(event) {
-			event.target.playVideo();
-		}
-
-		var done = false;
-		function onPlayerStateChange(event) {
-			if (event.data == YT.PlayerState.PLAYING && !done) {
-				setTimeout(stopVideo, 6000);
-				done = true;
-			}
-		}
-		function stopVideo() {
-			player3.stopVideo();
-		}
-	</script>
-
   <script>
   if (detectIE()) {
     var frames = document.querySelectorAll('.js_video-box-frame');
