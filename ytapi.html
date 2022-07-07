@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    main {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 30px;
+      border: 2px solid black;
+    }
+    .count_wrap {
+      display: flex;
+      margin: 0 3px;
+    }
+    .text {
+      margin: 0 1px;
+    }
+    #title {
+      display: block;
+      margin: 30px 0 10px;
+    }
+    .container {
+      display: flex;
+    }
+    section {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="count_wrap">
+      <div class="text">likes</div>
+      <div id="likes">0</div>
+    </div>
+    <div class="count_wrap">
+      <div class="text">views</div>
+      <div id="views">0</div>
+    </div>
+    <div class="count_wrap">
+      <div class="text">comments</div>
+      <div id="comments">0</div>
+    </div>
+    <div class="count_wrap">
+      <div class="text">favorites</div>
+      <div id="favorites">0</div>
+    </div>
+  </main>
+  <section>
+    <h1 id="title">타이틀은?</h1>
+    <div class="container">
+      <div id="player"></div>
+      <iframe width="330" height="400" style="margin-left:1em;" class="chatcontainer"
+        src="https://www.youtube.com/live_chat?v=10b8xduru1g&embed_domain=127.0.0.1&dark_theme=1" frameborder="0"
+        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    var video_id = '10b8xduru1g';
+    var live = 0;
+    var refresh = 4000;
+
+    var YTFunction = {
+      initialize: function () {
+        YTFunction.global.get_refresh();
+        setInterval(function () {
+          YTFunction.update(video_id);
+        }, refresh);
+      },
+      options: {
+        yt_api: "https://www.googleapis.com/youtube/v3/videos",
+        yt_key: "AIzaSyCxxgqQjDfBAL65x-JpNBUetbBeyxOh6vk",
+        $likes: "#likes",
+        $views: "#views",
+        $comments: "#comments",
+        $favorite: "#favorite",
+        $title: "#title"
+      },
+      update: function (video_id) {
+        YTFunction.ajax.getInformation(video_id);
+        YTFunction.ajax.get_title(video_id);
+      },
+      ajax: {
+        getInformation: function (video_id) {
+          var data = {
+            key: YTFunction.options.yt_key,
+            part: "statistics",
+            fields: "items(statistics)",
+            id: video_id
+          };
+
+          $.ajax({
+            type: "GET",
+            data: data,
+            url: YTFunction.options.yt_api,
+            async: false,
+            success: function (response) {
+              var result = response.items[0].statistics || {};
+              var info = {
+                likes: result['likeCount'],
+                views: result['viewCount'],
+                favorite: result['favoriteCount'],
+                comments: result['commentCount']
+              }
+              console.log(info);
+              $(YTFunction.options.$likes).text(info.likes);
+              $(YTFunction.options.$views).text(info.views);
+              $(YTFunction.options.$favorite).text(info.favorite);
+              $(YTFunction.options.$comments).text(info.comments);
+            }
+          });
+        },
+        get_title: function (video_id) {
+          var data = {
+            key: YTFunction.options.yt_key,
+            part: "snippet",
+            fields: "items(snippet(title))",
+            id: video_id
+          };
+          var title = $.ajax({
+            type: "GET",
+            data: data,
+            url: YTFunction.options.yt_api,
+            async: false,
+            success: function (response) {
+              var title = response.items[0].snippet["title"];
+              $(YTFunction.options.$title).text(title);
+            }
+          });
+        }
+      },
+      global: {
+        isValidURL: function (u) {
+          if (YTFunction.global.get_hostname(u) == "https://youtu.be") {
+            return "short";
+          } else if (YTFunction.global.get_hostname(u) == "https://www.youtube.com") {
+            return "original";
+          } else {
+            return "fail";
+          }
+        },
+        get_hostname: function (url) {
+          var m = url.match(/^https:\/\/[^/]+/);
+          return m ? m[0] : false;
+        },
+        get_refresh: function () {
+          return refresh;
+        }
+      }
+    };
+    YTFunction.initialize();
+
+
+    var player;
+    function onYouTubePlayerAPIReady() {
+      player = new YT.Player('player', {
+        width: 710,
+        height: 400,
+        playerVars: {
+          'rel': 0,
+          'autoplay': 1,
+          'controls': 0,
+          'autohide': 1,
+          'loop': 1,
+          'wmode': 'opaque'
+        },
+        videoId: video_id,
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      event.target.mute();
+    }
+  </script>
+
+</body>
+
+</html>
